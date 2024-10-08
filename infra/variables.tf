@@ -235,12 +235,12 @@ variable "chatGptDeploymentCapacity" {
 
 variable "azureOpenAIEmbeddingDeploymentName" {
   type    = string
-  default = "text-embedding-ada-002"
+  default = "text-embedding-3-large"
 }
 
 variable "azureOpenAIEmbeddingsModelName" {
   type    = string
-  default = "text-embedding-ada-002"
+  default = "text-embedding-3-large"
 }
 
 variable "azureOpenAIEmbeddingsModelVersion" {
