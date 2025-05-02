@@ -225,7 +225,7 @@ variable "chatGptModelSkuName" {
 
 variable "chatGptModelVersion" {
   type    = string
-  default = "0613"
+  default = "1120"
 }
 
 variable "chatGptDeploymentCapacity" {
