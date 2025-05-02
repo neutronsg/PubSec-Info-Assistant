@@ -274,7 +274,7 @@ module "enrichmentApp" {
   sku = {
     size                                    = var.enrichmentAppServiceSkuSize
     tier                                    = var.enrichmentAppServiceSkuTier
-    capacity                                = 3
+    capacity                                = 1
   }
   kind                                      = "linux"
   reserved                                  = true
@@ -431,7 +431,7 @@ module "functions" {
   sku                                   = {
     size                                = var.functionsAppSkuSize
     tier                                = var.functionsAppSkuTier
-    capacity                            = 2
+    capacity                            = 1
   }
   kind                                  = "linux"
   runtime                               = "python"
