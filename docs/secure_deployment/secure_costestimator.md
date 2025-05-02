@@ -1,16 +1,16 @@
-# Information Assistant (IA) copilot template Secure Mode - Estimation
+# Information Assistant (IA) agent template Secure Mode - Estimation
 
-The Azure pricing calculator helps estimate costs by considering the amount of data to be processed and stored, as well as the expected performance level. It allows users to customize and combine different Azure services for IA copilot template secure mode and provides cost estimates based on the chosen configurations.
+The Azure pricing calculator helps estimate costs by considering the amount of data to be processed and stored, as well as the expected performance level. It allows users to customize and combine different Azure services for IA agent template secure mode and provides cost estimates based on the chosen configurations.
 
 | Solution            | Mode | Environment  |    Azure Pricing Calculator Link  |
 | :------------------:|:---------:|:---------------:|:-------------------:|
-| IA copilot template, version 1.2 | Secure | Sandbox  |  [Sample Azure Estimation](https://azure.com/e/1492bd09c422421186d820ff23dc1f2f) |
+| IA agent template, version 1.2 | Secure | Sandbox  |  [Sample Azure Estimation](https://azure.com/e/192838582a644d02bd03bd07da650517) |
 
 ---
 
 ## Azure Services
 
-The following list of Azure Services will be deployed for IA copilot template secure mode:
+The following list of Azure Services will be deployed for IA agent template secure mode:
 
 - App Service (App Service Plan) [:link:](https://azure.microsoft.com/en-ca/pricing/details/app-service/linux/)
 - Application Insights [:link:](https://azure.microsoft.com/en-ca/pricing/details/monitor/)
@@ -24,15 +24,15 @@ The following list of Azure Services will be deployed for IA copilot template se
 - Azure OpenAI [:link:](https://azure.microsoft.com/en-ca/pricing/details/cognitive-services/openai-service/)
 - Storage account [:link:](https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview)
 - Azure Active Directory [:link:](https://www.microsoft.com/en-sg/security/business/microsoft-entra-pricing?rtc=1)
-- Azure DDOS Standard Protection [:link:](https://azure.microsoft.com/en-ca/pricing/details/ddos-protection/)
+- Azure DDOS Standard Protection (recommended) [:link:](https://azure.microsoft.com/en-ca/pricing/details/ddos-protection/)
 - Azure Container Registry [:link:](https://azure.microsoft.com/en-ca/pricing/details/container-registry/)
-- Azure DNS Resolver [:link:](https://azure.microsoft.com/en-ca/pricing/details/dns/)
+- Azure DNS Private Resolver [:link:](https://azure.microsoft.com/en-ca/pricing/details/dns/)
+- Azure DNS Private Zones [:link:](https://azure.microsoft.com/en-us/pricing/details/dns/)
 - Azure Private Link [:link:](https://azure.microsoft.com/en-ca/pricing/details/private-link/)
+- Azure Private Endpoints [:link:](https://azure.microsoft.com/en-us/pricing/details/private-link/)
 - Azure Container Registry [:link:](https://azure.microsoft.com/en-ca/pricing/details/container-registry/)
 - Azure Network Interface [:link:](https://azure.microsoft.com/en-us/pricing/details/virtual-network/)
 - Azure Network Security Group [:link:](https://azure.microsoft.com/en-us/pricing/details/virtual-network/)
-- Azure Private DNS Zone [:link:](https://azure.microsoft.com/en-us/pricing/details/private-link/)
-- Azure Private Endpoints [:link:](https://azure.microsoft.com/en-us/pricing/details/private-link/)
 - Azure Virtual Network [:link:](https://azure.microsoft.com/en-us/pricing/details/virtual-network/)
 
 ---

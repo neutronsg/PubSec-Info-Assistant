@@ -1,14 +1,14 @@
-# Deploying Information Assistant (IA) copilot template to Azure
+# Deploying Information Assistant (IA) agent template to Azure
 
 :warning: **IMPORTANT**: Please ensure you have met the [Azure account requirements](../../README.md#azure-account-requirements) before continuing.
 
-Follow these steps to get the copilot template up and running in a subscription of your choice. Note that there may be specific instructions for deploying to Azure Government or other Sovereign regions.
+Follow these steps to get the agent template up and running in a subscription of your choice. Note that there may be specific instructions for deploying to Azure Government or other Sovereign regions.
 
-If you prefer to have a more guided experience, you may choose to [view the click-through deployment guide](https://aka.ms/InfoAssist/deploy) for this copilot template.  
+If you prefer to have a more guided experience, you may choose to [view the click-through deployment guide](https://aka.ms/InfoAssist/deploy) for this agent template.  
 
 ## Development Environment Configuration
 
-The deployment process for the IA copilot template, uses a concept of **Developing inside a Container** to containerize all the necessary pre-requisite component without requiring them to be installed on the local machine. The environment you will work in will be created using a development container or dev container hosted on a virtual machine using GitHub Codespaces.
+The deployment process for the IA agent template, uses a concept of **Developing inside a Container** to containerize all the necessary pre-requisite component without requiring them to be installed on the local machine. The environment you will work in will be created using a development container or dev container hosted on a virtual machine using GitHub Codespaces.
 
 Begin by first forking the Information Assistant repository into your own repository. This can be useful for managing any changes you may require for your local environment. It will also enable you to accept and merge changes from the Information Assistant repo as future releases and hotfixes are made available.
 
@@ -27,7 +27,7 @@ Once you have completed setting up a GitHub Codespaces, please move on to the Si
 
 ## Sizing estimator
 
- The IA copilot template needs to be sized appropriately based on your use case. Please review our [Sizing Estimator](/docs/costestimator.md) to help find the configuration that fits your needs.
+ The IA agent template needs to be sized appropriately based on your use case. Please review our [Sizing Estimator](/docs/costestimator.md) to help find the configuration that fits your needs.
 
  To change the size of components deployed, make changes in the [Terraform Variables](/infra/variables.tf) file.
 
@@ -53,8 +53,8 @@ WORKSPACE | Yes  | The workspace name (use something simple and unique to you). 
 SUBSCRIPTION_ID | Yes | The GUID of the Azure Subscription you plan to deploy IA into. This is required in the latest versions of Terraform.
 AZURE_ENVIRONMENT | Yes | This will determine the Azure cloud environment the deployment will target. Information Assistant currently supports, AzureCloud and AzureUSGovernment. Info available at [Azure cloud environments](https://docs.microsoft.com/en-us/cli/azure/manage-clouds-azure-cli?toc=/cli/azure/toc.json&bc=/cli/azure/breadcrumb/toc.json). If you are targeting "AzureUSGovernment" please see our [sovereign deployment support documentation](/docs/deployment/enable_sovereign_deployment.md).
 SECURE_MODE | Yes | Defaults to `false`. This feature flag will determine if the Information Assistant deploys it's Azure Infrastructure in a secure mode or not.</br>:warning: Before enabling secure mode please read the extra instructions on [Enabling Secure Deployment](/docs/secure_deployment/secure_deployment.md)
-ENABLE_WEB_CHAT | Yes | Defaults to `false`. This feature flag will enable the ability to use Web Search results as a data source for generating answers from the LLM. This feature will also deploy a Bing v7 Search instance in Azure to retrieve web results from, however Bing v7 Search is not available in AzureUSGovernment regions, so this feature flag is **NOT** compatible with `AZURE_ENVIRONMENT=AzureUSGovernment`.
-ENABLE_BING_SAFE_SEARCH | No | Defaults to `true`. If you are using the `ENABLE_WEB_CHAT`feature you can set the following values to enable safe search on the Bing v7 Search APIs.
+ENABLE_WEB_CHAT | Yes | Defaults to `false`. This feature flag will enable the ability to use Web Search results as a data source for generating answers from the LLM. This feature will also deploy a Bing v7 Search instance in Azure to retrieve web results from, however Bing v7 Search is not available in AzureUSGovernment regions, so this feature flag is **NOT** compatible with `AZURE_ENVIRONMENT=AzureUSGovernment`. **Note:** If you have set SECURE_MODE to `true` you will have to set ENABLE_WEB_CHAT to `false` as this feature is not compatible with secure mode deployment. 
+ENABLE_BING_SAFE_SEARCH | No | Defaults to `true`. If you are using the `ENABLE_WEB_CHAT`feature you can set the following values to enable safe search on the Bing v7 Search APIs. Bing safe search is a Bing setting that filters out inappropriate web content.
 ENABLE_UNGROUNDED_CHAT | Yes | Defaults to `false`. This feature flag will enable the ability to interact directly with an LLM. This experience will be similar to the Azure OpenAI Playground
 ENABLE_MATH_ASSISTANT | Yes | Defaults to `true`. This feature flag will enable the Math Assistant tab in the Information Assistant website. Read more information on the [Math Assistant](/docs/features/features.md)
 ENABLE_TABULAR_DATA_ASSISTANT | Yes | Defaults to `true`. This feature flag will enable the Tabular Data Assistant tab in the Information Assistant website. Read more information about the [Tabular Data Assistant](/docs/features/features.md). Read the security warnings on the Tabular Data Assistant feature page when deploying this feature.
@@ -63,17 +63,17 @@ SHAREPOINT_TO_SYNC | No | This is a JSON Array of Objects for SharePoint Sites a
 REQUIRE_WEBSITE_SECURITY_MEMBERSHIP | Yes | Use this setting to determine whether a user needs to be granted explicit access to the website via an Azure AD Enterprise Application membership (true) or allow the website to be available to anyone in the Azure tenant (false). Defaults to false. If set to true, A tenant level administrator will be required to grant the implicit grant workflow for the Azure AD App Registration manually.
 SECRET_EXPIRATION_DAYS | Yes | Defaults to `730`. Use this setting to set the secret expiration to the current day plus the number of days specified. Key Vault secrets require an expiration date to be compatible with Microsoft's recommended guardrails for Azure Key Vault policy. We have NOT included automatic secret rotation in this deployment. Go [here](https://learn.microsoft.com/en-us/azure/key-vault/keys/how-to-configure-key-rotation) for more information on enabling cryptographic key auto-rotation.
 SKIP_PLAN_CHECK | No | If this value is set to 1, then the Terraform deployment will not stop to allow you to review the planned changes. The default value is 0 in the scripts, which will allow the deployment to stop and confirm you accept the proposed changes before continuing.
-USE_EXISTING_AOAI | Yes | Defaults to false. Set this value to "true" if you want to use an existing Azure Open AI service instance in your subscription. This can be useful when there are limits to the number of AOAI instances you can have in one subscription. When the value is set to "false" and Terraform will create a new Azure Open AI service instance in your resource group.
+USE_EXISTING_AOAI | Yes | Defaults to false. Set this value to "true" if you want to use an existing Azure Open AI service instance in your subscription. This can be useful when there are limits to the number of AOAI instances you can have in one subscription. When the value is set to "false" and Terraform will create a new Azure Open AI service instance in your resource group. **Note:** If you have set SECURE_MODE to `true` you will have to set USE_EXISTING_AOAI to `false` as using an existing Azure OpenAI resource is not compatible with secure mode. 
 AZURE_OPENAI_RESOURCE_GROUP | No | If you have set **USE_EXISTING_AOAI** to "true" then use this parameter to provide the name of the resource group that hosts the Azure Open AI service instance in your subscription.
 AZURE_OPENAI_SERVICE_NAME | No | If you have set **USE_EXISTING_AOAI** to "true" then use this parameter to provide the name of the Azure Open AI service instance in your subscription.
-AZURE_OPENAI_CHATGPT_DEPLOYMENT | No | If you have set **USE_EXISTING_AOAI** to "true" then use this parameter to provide the name of a deployment of the "gpt-35-turbo" model in the Azure Open AI service instance in your subscription.
+AZURE_OPENAI_CHATGPT_DEPLOYMENT | No | If you have set **USE_EXISTING_AOAI** to "true" then use this parameter to provide the name of a deployment of the gpt model in the Azure Open AI service instance in your subscription.
 USE_AZURE_OPENAI_EMBEDDINGS | Yes | Defaults to "true". When set to "true" this value indicates to Information Assistant to use Azure OpenAI models for embedding text values. If set to "false", Information Assistant will use the open source language model that is provided in the values below.
 AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME| No | If you have set **USE_AZURE_OPENAI_EMBEDDINGS** to "true" then use this parameter to provide the name of a deployment of the "text-embedding-ada-002" model in the Azure Open AI service instance in your subscription.
 OPEN_SOURCE_EMBEDDING_MODEL | No | A valid open source language model that Information Assistant will use for text embeddings. The model needs to be downloadable and available through Sentence Transformer. This setting will be used when **USE_AZURE_OPENAI_EMBEDDINGS** is set to "false".
 OPEN_SOURCE_EMBEDDING_MODEL_VECTOR_SIZE | No | When specifying an open source language model the vector size the model's embedding produces must be specified so that the Azure AI Search hybrid index's vector columns can be set to the matching size. This setting will be used when **USE_AZURE_OPENAI_EMBEDDINGS** is set to "false".
 AZURE_OPENAI_CHATGPT_MODEL_NAME | No | This can be used to select a different GPT model to be deployed to Azure OpenAI when the default (gpt-35-turbo-16k) isn't available to you.
 AZURE_OPENAI_CHATGPT_MODEL_VERSION | No | This can be used to select a specific version of the GPT model above when the default (0613) isn't available to you.
-AZURE_OPENAI_CHATGPT_SKU | No | This can be used to select a different GPT model SKU to be used on the deployment to Azure OpenAI when the default (Standard) isn't available.
+AZURE_OPENAI_CHATGPT_SKU | No | This can be used to select a different GPT model SKU to be used on the deployment to Azure OpenAI when the default (Standard) isn't available. Acceptable values are one of the following: "Standard", "ProvisionedManged", "GlobalStandard", "GlobalProvisionedManaged", "GlobalBatch"
 AZURE_OPENAI_EMBEDDINGS_MODEL_NAME | No | This can be used to select a different embeddings model to be deployed to Azure OpenAI when the default (text-embedding-ada-002) isn't available to you.
 AZURE_OPENAI_EMBEDDINGS_MODEL_VERSION | No | This can be used to select a specific version of the embeddings model above when the default (2) isn't available to you.
 AZURE_OPENAI_EMBEDDINGS_SKU | No | This can be used to select a different embeddings model SKU to be used on the deployment to Azure OpenAI when the default (Standard) isn't available.
@@ -139,6 +139,7 @@ The following resource providers must be registered within your subscription pri
 * Microsoft.OperationalInsights
 * Microsoft.KeyVault
 * Microsoft.AlertsManagement
+* Microsoft.Insights
 
 The following command lists all the subscription's resource providers that are Registered.
 
@@ -158,6 +159,7 @@ az provider register --namespace Microsoft.Storage
 az provider register --namespace Microsoft.OperationalInsights
 az provider register --namespace Microsoft.KeyVault
 az provider register --namespace Microsoft.AlertsManagement
+az provider register --namespace Microsoft.Insights
 ```
 
 Confirm all the resource providers have been registered before proceeding with the deployment.
@@ -245,14 +247,14 @@ Once deployed, you can find the URL of your installation by:
 
 ## Next steps
 
-At this point deployment is complete. Please go to the [Using the IA copilot template for the first time](/docs/deployment/using_ia_first_time.md) section and complete the following steps.
+At this point deployment is complete. Please go to the [Using the IA agent template for the first time](/docs/deployment/using_ia_first_time.md) section and complete the following steps.
 
 ## Additional Considerations for a Production Adoption
 
-There are considerations for adopting the Information Assistant (IA) copilot template into a production environment. [See this documentation](/docs/deployment/considerations_production.md).
+There are considerations for adopting the Information Assistant (IA) agent template into a production environment. [See this documentation](/docs/deployment/considerations_production.md).
 
 ## Need Help?
 
 Check these [troubleshooting methods](/docs/deployment/troubleshooting.md).
 
-If you need assistance with deployment or configuration of this copilot template, please leverage the Discussion forum in this repository, or reach out to your Microsoft Unified Support account manager.
+If you need assistance with deployment or configuration of this agent template, please leverage the Discussion forum in this repository, or reach out to your Microsoft Unified Support account manager.

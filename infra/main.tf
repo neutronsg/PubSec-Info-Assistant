@@ -252,7 +252,6 @@ module "kvModule" {
   name                          = "infoasst-kv-${random_string.random.result}"
   location                      = var.location
   kvAccessObjectId              = data.azurerm_client_config.current.object_id 
-  spClientSecret                = module.entraObjects.azure_ad_mgmt_app_secret 
   resourceGroupName             = azurerm_resource_group.rg.name
   tags                          = local.tags
   is_secure_mode                = var.is_secure_mode
@@ -342,7 +341,7 @@ module "webapp" {
   resourceGroupName                   = azurerm_resource_group.rg.name
   location                            = var.location
   tags                                = merge(local.tags, { "azd-service-name" = "backend" })
-  runtimeVersion                      = "3.10" 
+  runtimeVersion                      = "3.12" 
   scmDoBuildDuringDeployment          = false
   managedIdentity                     = true
   alwaysOn                            = true

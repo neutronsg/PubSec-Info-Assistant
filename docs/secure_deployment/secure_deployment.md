@@ -20,11 +20,19 @@
 
 It is recommended that you start with a [standard deployment](/docs/deployment/deployment.md) of Information Assistant (IA) to become familiar with the deployment process before starting the secure mode deployment. The documentation provided below builds upon the standard deployment and assumes you are familiar with the deployment process.
 
-[!IMPORTANT]  
-> The Information Assistant **secure mode** option requires all the [parameters and configuration of a standard deployment](/docs/deployment/deployment.md#configure-env-files). In addition to those it also...
->
-> Assumes clients have or will establish secure communications from their enterprise to the Azure cloud that will enable it to be deployed (e.g., Azure ExpressRoute, Azure VPN Gateway).
->
+### Prerequisites
+
+Before you get started ensure you go through the following prerquisites: 
+ 
+1. The Information Assistant **secure mode** option requires all the [parameters and configuration of a standard deployment](/docs/deployment/deployment.md#configure-env-files). 
+
+2. **Secure communication channel to Azure cloud**: assumes clients have or will establish secure communications from their enterprise to the Azure cloud that will enable it to be deployed (e.g., Azure ExpressRoute, Azure VPN Gateway). If your enterprise does not have an existing secure communication channel to the Azure cloud, consider setting up a Point-to-Site (P2S) Virtual Private Network (VPN) for deployment purposes. See [Secure Communication to Azure](#secure-communication-to-azure) section below for more details.
+Note that establishing a secure communication is required to complete the deployment steps below. 
+
+3. (Optional) If you are planning to deploy Information Assistant **secure mode** with [Microsoft Cloud for Sovereignty](https://www.microsoft.com/industry/sovereignty/cloud), you have to first set up and deploy a [Sovereign Landing Zone (SLZ)](https://aka.ms/slz). 
+Note that Information Assistant *secure mode* is currently only compatible with the *Online* management group scope. See the [deploy with Microsoft Cloud for Sovereignty](#deploying-with-microsoft-cloud-for-sovereignty) section below for more details.
+
+[!IMPORTANT] 
 >Secure mode is not compatible with the following IA features:
 >
 > * Using an existing Azure OpenAI services
@@ -33,7 +41,7 @@ It is recommended that you start with a [standard deployment](/docs/deployment/d
 >
 >It is recommended to use secure mode with a DDoS Protection Plan for Virtual Network Protection, but it is not required. There is a limit of 1 DDoS protection plan for a subscription in a region. You can reuse an existing DDoS plan in your tenant, Information Assistant can deploy one for you, or you can choose to not use a DDoS Protection Plan on your virtual network.
 >
->Secure mode is also compatible with the [Sovereign Landing Zone (SLZ)](https://aka.ms/slz) which is a [Microsoft Cloud for Sovereignty](https://www.microsoft.com/industry/sovereignty/cloud) offering. It is currently only compatible with the *Online* management group scope. See the [deploy with Microsoft Cloud for Sovereignty](#deploying-with-microsoft-cloud-for-sovereignty) section below for more details.
+
 
 ## Additional Azure account requirements
 
@@ -168,7 +176,7 @@ See [Virtual network and subnet CIDRs](#network-and-subnet-cidr-configuration) s
 
 ## Sizing estimator
 
-The IA copilot template secure mode needs to be sized appropriately based on your use case. Please review our [sizing estimator](/docs/secure_deployment/secure_costestimator.md) to help find the configuration that fits your needs.
+The IA agent template secure mode needs to be sized appropriately based on your use case. Please review our [sizing estimator](/docs/secure_deployment/secure_costestimator.md) to help find the configuration that fits your needs.
 
 To change the size of components deployed, make changes in the [Terraform Variables](/infra/variables.tf) file.
 
@@ -242,9 +250,9 @@ To perform a secure mode deployment, follow these steps:
 
     * Establish virtual network peering with your corporate network to the Information Assistant virtual network, and private access via ExpressRoute.
     * Establish a Point-to-Site (P2S) VPN Gateway for your development workstation. See [Secure Communication to Azure](#secure-communication-to-azure) section.
-    * If using Microsoft's Cloud for Sovereignty, there are additional considerations you can find in the [Secure communication with Microsoft Cloud for Sovereignty](#secure-communication-with-microsoft-cloud-for-sovereignty) section.
+    * If using Microsoft's Cloud for Sovereignty, there are additional considerations you can find in the [Deploying with Microsoft Cloud for Sovereignty](#deploying-with-microsoft-cloud-for-sovereignty) section.
 
-8. If you are choosing to use a P2S VPN to connect to the Information Assistant virtual network, then follow these steps. Otherwise, skip to Step 18.
+8. If you are choosing to use a P2S VPN to connect to the Information Assistant virtual network, then follow steps 9 - 15 for the initial configuration. Otherwise, skip to Step 16.
 
     :warning: *You will need your VPN configuration and client certificate that matches your Azure VPN Gateway to continue*
 
@@ -277,26 +285,26 @@ To perform a secure mode deployment, follow these steps:
     ```
 
 15. Don't change any other fields. Save the VPN config file.
-16. Next run the following commands to enable the tunnel on the Codespace
+
+16. Now perform the rest of the normal [Deployment](/docs/deployment/deployment.md) configuration and start `make deploy`. When you encounter the connectivity prompt come back here and resume at Step 17. Note: You must repeat steps 17 - 22 each time your Codespace stops during a deployment.
+17. Once the deployment stops to prompt you for connectivity you will need to add the DNS Private Resolver IP address to your GitHub Codespace configuration. The DNS Private Resolver IP was output to your VSCode Terminal for you in the prompt to confirm connectivity. Do this by running the following command:
+
+    `sudo nano /etc/resolv.conf`
+
+    Add the following entry at the top in your `resolv.conf` file:
+
+    ```text
+    nameserver XXX.XXX.XXX.XXX
+    ```
+    Note: make sure the nameserver entry is at the top of the file. 
+18. Save the `/etc/resolv.conf` file.
+19. Now run the following commands to enable the tunnel on the Codespace
 
     ```bash
     sudo mkdir -p /dev/net
     sudo mknod /dev/net/tun c 10 200
     sudo chmod 600 /dev/net/tun
     ```
-
-17. Now perform the rest of the normal [Deployment](/docs/deployment/deployment.md) configuration and start `make deploy`. When you encounter the connectivity prompt come back here and resume at Step 18.
-18. Once the deployment stops to prompt you for connectivity you will need to add the DNS Private Resolver IP address to your GitHub Codespace configuration. The DNS Private Resolver IP was output to your VSCode Terminal for you in the prompt to confirm connectivity. Do this by running the following command:
-
-    `sudo nano /etc/resolv.conf`
-
-    Add the following entry in your `resolv.conf` file:
-
-    ```text
-    nameserver XXX.XXX.XXX.XXX
-    ```
-
-19. Save the `/etc/resolv.conf` file.
 20. Connect to the VPN using the filled in VPN configuration file. Open a second bash prompt in VSCode and use the following commands:
 
     * To connect using the command line, type the following command:
@@ -314,7 +322,7 @@ To perform a secure mode deployment, follow these steps:
 21. You should now be able to verify you can resolve the private IP of the Information Assistant. `nslookup` is installed in the Codespace for this use.
 22. Now answer `y` to the connectivity prompt and let the deployment complete. If your deployment has stopped, you can simply run `make deploy` again to get back to the connectivity prompt.
 
-Once deployed only the Azure App Service named like, *infoasst-web-xxxxx*, will be accessible without the VPN established. You can share the URL of the website with users to start using the Information Assistant copilot template.
+Once deployed only the Azure App Service named like, *infoasst-web-xxxxx*, will be accessible without the VPN established. You can share the URL of the website with users to start using the Information Assistant agent template.
 
 ## Additional considerations for secure mode deployment
 
@@ -371,7 +379,7 @@ and the reciprocal setting of:
 
 * Enable '*infoasst-vnet-xxxxx*' to use '*my VPN virtual network's*' remote gateway or route server
 
-This will ensure that the Azure DNS private resolver set up by the Information Assistant copilot template can resolve traffic properly to your VPN connection.
+This will ensure that the Azure DNS private resolver set up by the Information Assistant agent template can resolve traffic properly to your VPN connection.
 
 ### Deploying with Microsoft Cloud for Sovereignty
 
@@ -380,7 +388,7 @@ The [Sovereign Landing Zone (SLZ)](https://aka.ms/slz) is a [Microsoft Cloud for
 For a detailed overview of an SLZ and all its capabilities, see [Sovereign Landing Zone](https://github.com/Azure/sovereign-landing-zone) documentation on GitHub. Also, [review the sample reference architecutre and guidance for deploying LLMs and Azure OpenAI in Retrieval Augmented Generation (RAG) pattern for implementations with the SLZ](https://learn.microsoft.com/industry/sovereignty/architecture/AIwithLLM/overview-ai-llm-configuration).
 
 
-Information Assistant copilot template is compatible with the *Online* management group scope. Within a SLZ deployment, you can find an established Connectivity management group where an existing virtual network and infrastructure already exist.
+Information Assistant agent template is compatible with the *Online* management group scope. Within a SLZ deployment, you can find an established Connectivity management group where an existing virtual network and infrastructure already exist.
 
 >We recommend that connectivity to Information Assistant in the *Online* management group be made accessible by peering the Information Assistant virtual network with the existing virtual network within the SLZ Connectivity management group.
 
