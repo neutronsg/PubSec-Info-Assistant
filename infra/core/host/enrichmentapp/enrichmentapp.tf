@@ -22,7 +22,7 @@ resource "azurerm_monitor_autoscale_setting" "scaleout" {
     capacity {
       default = 1
       minimum = 1
-      maximum = 5
+      maximum = 2
     }
 
     rule {

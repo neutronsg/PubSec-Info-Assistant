@@ -322,7 +322,7 @@ module "enrichmentApp" {
     AZURE_SEARCH_SERVICE_ENDPOINT           = module.searchServices.endpoint
     AZURE_SEARCH_AUDIENCE                   = var.azure_search_scope
     TARGET_EMBEDDINGS_MODEL                 = var.useAzureOpenAIEmbeddings ? "azure-openai_${var.azureOpenAIEmbeddingDeploymentName}" : var.sentenceTransformersModelName
-    EMBEDDING_VECTOR_SIZE                   = var.useAzureOpenAIEmbeddings ? 1536 : var.sentenceTransformerEmbeddingVectorSize
+    EMBEDDING_VECTOR_SIZE                   = var.useAzureOpenAIEmbeddings ? 3072 : var.sentenceTransformerEmbeddingVectorSize
     AZURE_AI_CREDENTIAL_DOMAIN              = var.azure_ai_private_link_domain
     AZURE_OPENAI_AUTHORITY_HOST             = var.azure_openai_authority_host
   }
@@ -522,11 +522,11 @@ module "openaiServices" {
       rai_policy_name = "Microsoft.Default"
     },
     {
-      name            = var.azureOpenAIEmbeddingDeploymentName != "" ? var.azureOpenAIEmbeddingDeploymentName : "text-embedding-ada-002"
+      name            = var.azureOpenAIEmbeddingDeploymentName != "" ? var.azureOpenAIEmbeddingDeploymentName : "text-embedding-3-large"
       model           = {
         format        = "OpenAI"
-        name          = var.azureOpenAIEmbeddingsModelName != "" ? var.azureOpenAIEmbeddingsModelName : "text-embedding-ada-002"
-        version       = "2"
+        name          = var.azureOpenAIEmbeddingsModelName != "" ? var.azureOpenAIEmbeddingsModelName : "text-embedding-3-large"
+        version       = "1"
       }
       sku             = {
         name          = var.azureOpenAIEmbeddingsModelSku
