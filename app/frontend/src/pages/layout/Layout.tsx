@@ -32,7 +32,7 @@ export const Layout = () => {
                 <WarningBanner />
                 <div className={styles.headerContainer}>
                     <div className={styles.headerTitleContainer}>
-                        <img src={openai} alt="Azure OpenAI" className={styles.headerLogo} />
+                        {/* <img src={openai} alt="Azure OpenAI" className={styles.headerLogo} /> */}
                         <h3 className={styles.headerTitle}><Title /></h3>
                     </div>
                     <nav>

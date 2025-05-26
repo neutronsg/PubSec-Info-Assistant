@@ -611,7 +611,7 @@ variable "embeddingsQueue" {
 
 variable "applicationtitle" {
   type    = string
-  default = ""
+  default = "UNICOMM AI Assistant"
 }
 
 variable "video_indexer_api_version" {
